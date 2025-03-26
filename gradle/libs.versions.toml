@@ -1,0 +1,14 @@
+[versions]
+groovy-all = "4.0.26"
+junit = "4.13.2"
+logback = "1.5.15"
+args4j = "2.0.31"
+
+spock-core = "2.3-groovy-4.0"
+
+[libraries]
+groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovy-all" }
+args4j = { module = "args4j:args4j", version.ref = "args4j" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+junit = { module = "junit:junit", version.ref = "junit" }
+spock-core = { module = "org.spockframework:spock-core", version.ref = "spock-core" }

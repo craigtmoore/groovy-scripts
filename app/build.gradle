@@ -1,0 +1,46 @@
+plugins {
+    id 'groovy'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+//    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation libs.groovy.all
+    implementation libs.logback
+    implementation libs.args4j
+
+    testImplementation libs.spock.core
+    testImplementation libs.junit
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.named('build') {
+    dependsOn shadowJar
+}
+
+shadowJar {
+    archiveBaseName = "scripts"
+    archiveClassifier = null
+    archiveVersion = null
+    manifest {
+        attributes 'Main-Class': 'common.Main'
+    }
+    from sourceSets.test.output
+    zip64 = true
+}
+
+
