@@ -5,6 +5,7 @@ import org.codehaus.groovy.runtime.StackTraceUtils
 import org.kohsuke.args4j.CmdLineException
 import org.kohsuke.args4j.CmdLineParser
 import org.kohsuke.args4j.ParserProperties
+import stacktrace.StacktraceCleanup
 
 /**
  * Main entry point for the scripts
@@ -14,7 +15,8 @@ class Main {
     static File logFile
 
     static Map commands = [
-            'add-line-numbers': AddLineNumbers
+        (AddLineNumbers.SCRIPT_NAME)   : AddLineNumbers,
+        (StacktraceCleanup.SCRIPT_NAME): StacktraceCleanup
     ]
 
     static void main(String[] args) {

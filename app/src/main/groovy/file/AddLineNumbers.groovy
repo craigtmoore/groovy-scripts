@@ -15,6 +15,7 @@ import java.nio.file.Path
  */
 @Slf4j
 class AddLineNumbers {
+    public static final String SCRIPT_NAME = "add-line-numbers"
 
     static class Options {
         @Option(name = '--help', aliases = ['-h'], usage = "Show this help menu", required = false)
@@ -71,7 +72,7 @@ class AddLineNumbers {
 
         def numberCodeSnippet = numberedCodeSnippetBuilder.toString()
         if (options.debug) {
-            println "$numberCodeSnippet"
+            ColorLogger.messageBuilder().cyan(numberCodeSnippet).log()
         }
 
         if (options.outFilePath) {
