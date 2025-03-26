@@ -24,6 +24,8 @@ class StacktraceCleanup {
         linePrefixesToIgnore = [
                 'java.base/jdk',
                 'java.base/java.lang.reflect',
+                'java.lang.reflect',
+                'jdk.internal.reflect',
                 'org.junit.jupiter.engine',
                 'org.junit.platform',
                 'org.gradle.api.internal',
@@ -64,7 +66,11 @@ class StacktraceCleanup {
         }
 
         stacktrace = stacktrace.findAll { String line ->
-            return !linePrefixesToIgnore.any { prefix -> line.startsWith("\tat $prefix") }
+            return !linePrefixesToIgnore.any { prefix ->
+                line.startsWith("\tat $prefix") ||
+                        line.startsWith("\tat app//$prefix") ||
+                        line.matches(/^\tat java\.base.*?\/${prefix}.*/)
+            }
         }
 
         if (options.debug) {
