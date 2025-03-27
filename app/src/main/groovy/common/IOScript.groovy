@@ -12,8 +12,7 @@ import java.nio.file.Path
  */
 abstract class IOScript {
 
-    public final ClipboardUtils clipboardUtils
-
+    private final ClipboardUtils clipboardUtils
     IOScript() {
         clipboardUtils = new ClipboardUtils()
     }
@@ -71,12 +70,12 @@ abstract class IOScript {
             if (options.debug) println outputString
             def outFile = Path.of(options.outFilePath)
             Files.writeString(outFile, outputString)
-            ColorLogger.messageBuilder().green("Saved output to '").cyan(options.outFilePath).green("'").log()
+            ColorLogger.messageBuilder().green("Saved output to '").yellow(options.outFilePath).green("'").log()
         } else if (options.useClipboard) {
             if (options.debug) println outputString
             clipboardUtils.setClipboardContents(outputString)
             ColorLogger.info "Saved output to clipboard"
-        } else if (System.console() == null) { // If running from a terminal (i.e. from a active console)
+        } else {
             println outputString
         }
     }
