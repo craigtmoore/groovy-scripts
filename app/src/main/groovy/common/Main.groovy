@@ -55,7 +55,7 @@ class Main {
         }
 
         try {
-            klass.newInstance().run(options)
+            klass.getDeclaredConstructor().newInstance().run(options)
         } catch (Throwable e) {
             StackTraceUtils.deepSanitize(e)
             e.printStackTrace()

@@ -1,5 +1,6 @@
 package common
 
+import common.exceptions.ClipboardException
 import groovy.util.logging.Slf4j
 
 import java.awt.Toolkit
@@ -15,7 +16,7 @@ import java.awt.datatransfer.UnsupportedFlavorException
  * @author Craig Moore
  */
 @Slf4j
-class ClipboardUtils {
+class ClipboardAccessorImpl implements ClipboardAccessor {
 
     List<String> getClipboardContents() {
         List<String> lines = new ArrayList<>()
@@ -39,11 +40,5 @@ class ClipboardUtils {
         StringSelection stringSelection = new StringSelection(text)
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard()
         clipboard.setContents(stringSelection, null)
-    }
-
-    static class ClipboardException extends RuntimeException {
-        ClipboardException(String message, Exception e) {
-            super(message, e)
-        }
     }
 }

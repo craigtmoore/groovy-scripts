@@ -1,7 +1,9 @@
 package stacktrace
 
-import common.ClipboardUtils
+import common.ClipboardAccessor
+import common.ClipboardAccessorImpl
 import common.IOScript
+import common.IOScriptImpl
 import groovy.util.logging.Slf4j
 
 /**
@@ -10,40 +12,41 @@ import groovy.util.logging.Slf4j
  * @author Craig Moore
  */
 @Slf4j
-class StacktraceCleanup extends IOScript {
-    public static final String SCRIPT_NAME = 'stacktrace-cleanup'
+class StacktraceCleanup {
+    static final String SCRIPT_NAME = 'stacktrace-cleanup'
+    static final ArrayList<String> LINE_PREFIXES = [
+        'java.base/jdk',
+        'java.base/java.lang.reflect',
+        'java.base@',
+        'java.lang.reflect',
+        'jdk.internal.reflect',
+        'org.junit.jupiter.engine',
+        'org.junit.platform',
+        'org.gradle.api.internal',
+        'org.gradle.internal',
+        'org.gradle.process.internal',
+        'worker.org.gradle',
+        'com.sun'
+    ]
 
-    private final List<String> linePrefixesToIgnore
-
-    StacktraceCleanup() {
-        linePrefixesToIgnore = [
-                'java.base/jdk',
-                'java.base/java.lang.reflect',
-                'java.lang.reflect',
-                'jdk.internal.reflect',
-                'org.junit.jupiter.engine',
-                'org.junit.platform',
-                'org.gradle.api.internal',
-                'org.gradle.internal',
-                'org.gradle.process.internal',
-                'com.sun'
-        ]
-    }
+    private final IOScript ioScript
+    StacktraceCleanup(IOScript ioScript) { this.ioScript = ioScript }
+    StacktraceCleanup() { this(new IOScriptImpl()) }
 
     static class Options extends IOScript.Options {}
 
     void run(Options options) {
-        def stacktrace = readInput(log, options)
+        def stacktrace = ioScript.readInput(log, options)
         def outputString = cleanupStacktrace(stacktrace)
-        writeOutput(options, outputString)
+        ioScript.writeOutput(options, outputString)
     }
 
-    private String cleanupStacktrace(List<String> stacktrace) {
+    private static String cleanupStacktrace(List<String> stacktrace) {
         stacktrace = stacktrace.findAll { String line ->
-            return !linePrefixesToIgnore.any { prefix ->
-                line.startsWith("\tat $prefix") ||
-                        line.startsWith("\tat app//$prefix") ||
-                        line.matches(/^\tat java\.base.*?\/${prefix}.*/)
+            !LINE_PREFIXES.any { prefix ->
+                line.matches("^\t+at ${prefix}.*") ||
+                line.matches("^\t+at app//${prefix}.*") ||
+                line.matches(/^\t+at java\.base.*?\/${prefix}.*/)
             }
         }
         stacktrace.join('\n')
