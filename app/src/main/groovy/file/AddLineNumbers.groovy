@@ -1,13 +1,9 @@
 package file
 
-import common.ClipboardUtils
-import common.ColorLogger
 import common.IOScript
+import common.IOScriptImpl
 import groovy.util.logging.Slf4j
 import org.kohsuke.args4j.Option
-
-import java.nio.file.Files
-import java.nio.file.Path
 
 /**
  * A script for adding the line numbers to a snippet of code in the clipboard or from a file
@@ -15,8 +11,12 @@ import java.nio.file.Path
  * @author Craig Moore
  */
 @Slf4j
-class AddLineNumbers extends IOScript {
+class AddLineNumbers {
     public static final String SCRIPT_NAME = "add-line-numbers"
+
+    private final IOScript ioScript
+    AddLineNumbers(IOScript ioScript) { this.ioScript = ioScript }
+    AddLineNumbers() { this(new IOScriptImpl()) }
 
     static class Options extends IOScript.Options {
         @Option(name = '--start', aliases = ['-n'], usage = "The starting line number of the code snippet", required = false)
@@ -24,9 +24,9 @@ class AddLineNumbers extends IOScript {
     }
 
     void run(Options options) {
-        def lines = readInput(log, options)
+        def lines = ioScript.readInput(log, options)
         def numberedString = addLineNumbers(options, lines)
-        writeOutput(options, numberedString)
+        ioScript.writeOutput(options, numberedString)
     }
 
     static String addLineNumbers(Options options, List<String> lines) {
@@ -46,7 +46,7 @@ class AddLineNumbers extends IOScript {
 
     private static String padLeft(String input, int length, String paddingChar = ' ') {
         if (!input) {
-            // Pad with the padding character if input is null.
+            // Pad with the padding character if input is null or blank
             return paddingChar.toString() * length
         }
         if (input.length() > length) {
