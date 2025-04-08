@@ -30,7 +30,7 @@ class IOScriptImplTest extends Specification {
         exception.message == 'No input provided'
     }
 
-    def "readInput() should throw an exception if the file contents are blank"() {
+    def "readInput() should throw an IllegalStateException if the file contents are blank"() {
         given: // An IOScriptImpl instance with a mocked logger and an empty input file
         def logMock = Mock(Logger)
         def clipboardAccessorMock = Mock(ClipboardAccessor)
@@ -192,6 +192,4 @@ class IOScriptImplTest extends Specification {
         cleanup:
         System.setOut(originalOut)
     }
-
-
 }
