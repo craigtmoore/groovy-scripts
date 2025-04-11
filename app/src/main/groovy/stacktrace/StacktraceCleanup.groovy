@@ -26,6 +26,8 @@ class StacktraceCleanup {
         'org.gradle.internal',
         'org.gradle.process.internal',
         'worker.org.gradle',
+        'org.codehaus.groovy',
+        'groovy.lang',
         'com.sun'
     ]
 
