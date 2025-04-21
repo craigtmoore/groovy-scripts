@@ -1,7 +1,5 @@
 package stacktrace
 
-import common.ClipboardAccessor
-import common.ClipboardAccessorImpl
 import common.IOScript
 import common.IOScriptImpl
 import groovy.util.logging.Slf4j
