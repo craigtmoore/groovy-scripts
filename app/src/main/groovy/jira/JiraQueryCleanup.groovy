@@ -22,6 +22,7 @@ class JiraQueryCleanup {
     void run(Options options) {
         def jiraQuery = ioScript.readInput(log, options)
         def outputString = cleanupJiraQuery(jiraQuery)
+        println outputString
         ioScript.writeOutput(options, outputString)
     }
 
@@ -33,17 +34,42 @@ class JiraQueryCleanup {
         if (input.size() != 1) {
             throw new IllegalArgumentException("Expected a single string input, but got: ${input.size()} strings")
         }
-        // Characters to escape in regex
-        def specialChars = "'\""
-        def escaped = new StringBuilder()
-        for (char c : input.get(0).toCharArray()) {
-            if (specialChars.contains(c.toString())) {
-                escaped.append('\\')
-            }
-            escaped.append(c)
+        def inputText = input.get(0)
+
+        // Special characters in JIRA queries that are ignored
+        def specialCharsToSkip = "()[].+*?|^\$\\"
+        if (specialCharsToSkip.any { c -> inputText.contains("\\\\" + c) }) {
+            log.warn("Input string already processed")
+            return inputText
         }
-        return escaped.toString()
+
+        if (inputText.trim().startsWith("text ~ ")) {
+            inputText = inputText.trim().substring("text ~ ".length())
+        }
+        if (inputText.startsWith("\"") || inputText.startsWith("'")) {
+            inputText = inputText.substring(1)
+        }
+        if (inputText.endsWith("\"") || inputText.endsWith("'")) {
+            inputText = inputText.substring(0, inputText.length() - 1)
+        }
+
+        // Quotation marks that should be escaped with a single backslash
+        def quoteChars = "'\""
+        def escaped = new StringBuilder()
+        for (char c : inputText.toCharArray()) {
+            if (specialCharsToSkip.contains(c.toString())) {
+                escaped.append('?')
+            } else if (quoteChars.contains(c.toString())) {
+                escaped.append('\\')
+                escaped.append(c)
+            } else {
+                escaped.append(c)
+            }
+        }
+        escaped = "text ~ \"\\\"$escaped\\\"\"".toString()
+        def result = escaped.toString().replaceAll("\\s+", " ")
+        return result
     }
-    
+
     
 }
