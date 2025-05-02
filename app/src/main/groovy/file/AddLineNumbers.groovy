@@ -26,6 +26,9 @@ class AddLineNumbers {
     void run(Options options) {
         def lines = ioScript.readInput(log, options)
         def numberedString = addLineNumbers(options, lines)
+        if (numberedString.lines().count() < 10) {
+            println numberedString
+        }
         ioScript.writeOutput(options, numberedString)
     }
 
