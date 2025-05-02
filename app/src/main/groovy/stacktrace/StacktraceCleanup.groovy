@@ -38,10 +38,18 @@ class StacktraceCleanup {
     void run(Options options) {
         def stacktrace = ioScript.readInput(log, options)
         def outputString = cleanupStacktrace(stacktrace)
+        if (outputString.lines().count() < 20) {
+            println outputString
+        }
         ioScript.writeOutput(options, outputString)
     }
 
     private static String cleanupStacktrace(List<String> stacktrace) {
+        // Remove timestamps (format: 00:12:49.703) from the beginning of each line
+        stacktrace = stacktrace.collect { String line ->
+            line.replaceAll(/^\d{2}:\d{2}:\d{2}\.\d{3} /, '')
+        }
+        // Remove lines that start with "at" and match the prefixes
         stacktrace = stacktrace.findAll { String line ->
             !LINE_PREFIXES.any { prefix ->
                 line.matches("^\t+at ${prefix}.*") ||
