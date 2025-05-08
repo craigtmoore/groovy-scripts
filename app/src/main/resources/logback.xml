@@ -12,6 +12,8 @@
     </root>
 
     <!-- Logger configuration for Scripts -->
-    <logger name="stacktrace.StacktraceCleanup" level="WARN" />
-    <logger name="file.AddLineNumbers" level="WARN" />
+    <logger name="stacktrace.StacktraceCleanup" level="${log.level:-INFO}" />
+    <logger name="file.AddLineNumbers" level="${log.level:-INFO}" />
+    <logger name="junit.TestCaseCount" level="${log.level:-INFO}" />
+    <logger name="jira.JiraQueryCleanup" level="${log.level:-INFO}" />
 </configuration>
