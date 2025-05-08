@@ -26,6 +26,14 @@ class Main {
         if (!scriptName) {
             ColorLogger.error('Missing \'scriptName\' parameter')
             System.exit(1)
+        } else if (scriptName == 'help' || scriptName == '--help' || scriptName == '-h') {
+            println ""
+            ColorLogger.warning "Available commands are:"
+            commands.each {name, _ ->
+                ColorLogger.info " - $name"
+            }
+            println "Use <commandName> --help to get help for a specific command"
+            System.exit(0)
         }
 
         Class klass = scriptName != null ? commands[scriptName] : null
