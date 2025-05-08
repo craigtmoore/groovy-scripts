@@ -2,15 +2,14 @@ package common
 
 import file.AddLineNumbers
 import jira.JiraQueryCleanup
+import junit.TestCaseCount
 import org.codehaus.groovy.runtime.StackTraceUtils
 import org.kohsuke.args4j.CmdLineException
 import org.kohsuke.args4j.CmdLineParser
 import org.kohsuke.args4j.ParserProperties
 import stacktrace.StacktraceCleanup
 
-/**
- * Main entry point for the scripts
- */
+/** Main entry point for the scripts */
 class Main {
 
     static File logFile
@@ -18,7 +17,8 @@ class Main {
     static Map commands = [
         (AddLineNumbers.SCRIPT_NAME)   : AddLineNumbers,
         (StacktraceCleanup.SCRIPT_NAME): StacktraceCleanup,
-        (JiraQueryCleanup.SCRIPT_NAME) : JiraQueryCleanup
+        (JiraQueryCleanup.SCRIPT_NAME) : JiraQueryCleanup,
+        (TestCaseCount.SCRIPT_NAME)    : TestCaseCount
     ]
 
     static void main(String[] args) {
