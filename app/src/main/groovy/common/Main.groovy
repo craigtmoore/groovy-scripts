@@ -1,6 +1,7 @@
 package common
 
 import file.AddLineNumbers
+import jira.AddJiraLinks
 import jira.JiraQueryCleanup
 import junit.TestCaseCount
 import org.codehaus.groovy.runtime.StackTraceUtils
@@ -17,6 +18,7 @@ class Main {
     static Map commands = [
         (AddLineNumbers.SCRIPT_NAME)   : AddLineNumbers,
         (StacktraceCleanup.SCRIPT_NAME): StacktraceCleanup,
+        (AddJiraLinks.SCRIPT_NAME)     : AddJiraLinks,
         (JiraQueryCleanup.SCRIPT_NAME) : JiraQueryCleanup,
         (TestCaseCount.SCRIPT_NAME)    : TestCaseCount
     ]

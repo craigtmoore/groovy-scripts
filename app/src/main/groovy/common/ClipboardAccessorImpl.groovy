@@ -41,4 +41,60 @@ class ClipboardAccessorImpl implements ClipboardAccessor {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard()
         clipboard.setContents(stringSelection, null)
     }
+
+    /**
+     * Note: this doesn't work when pasting into Microsoft Powerpoint, only works for Word or JIRA
+     * @param htmlText text that has HTML hyperlinks or other html code embedded
+     */
+    void setHtmlClipboardContents(String htmlText) {
+        // Build HTML clipboard format with required markers
+        String fragment = "<!--StartFragment-->${htmlText}<!--EndFragment-->"
+        String html = "<html><body>${fragment}</body></html>"
+        String header = "Version:0.9\r\n"
+        int startHTML = header.length()
+        int startFragment = startHTML + html.indexOf("<!--StartFragment-->")
+        int endFragment = startHTML + html.indexOf("<!--EndFragment-->") + "<!--EndFragment-->".length()
+        int endHTML = startHTML + html.length()
+        header += "StartHTML:${String.format('%08d', startHTML)}\r\n"
+        header += "EndHTML:${String.format('%08d', endHTML)}\r\n"
+        header += "StartFragment:${String.format('%08d', startFragment)}\r\n"
+        header += "EndFragment:${String.format('%08d', endFragment)}\r\n"
+        String clipboardHtml = header + html
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard()
+        Transferable transferable = new Transferable() {
+            public static final DataFlavor HTML_FLAVOR = new DataFlavor(
+                    "text/html;class=java.lang.String", "HTML Format"
+            );
+            @Override
+            DataFlavor[] getTransferDataFlavors() {
+                return [
+                        DataFlavor.selectionHtmlFlavor,
+                        DataFlavor.fragmentHtmlFlavor,
+                        DataFlavor.allHtmlFlavor,
+                        HTML_FLAVOR,
+                        DataFlavor.stringFlavor
+                ] as DataFlavor[]
+            }
+
+            @Override
+            boolean isDataFlavorSupported(DataFlavor flavor) {
+                return flavor == DataFlavor.selectionHtmlFlavor ||
+                        flavor == DataFlavor.fragmentHtmlFlavor ||
+                        flavor == DataFlavor.allHtmlFlavor ||
+                        flavor == HTML_FLAVOR ||
+                        flavor == DataFlavor.stringFlavor
+            }
+
+            @Override
+            Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+                if (flavor == DataFlavor.stringFlavor) {
+                    return htmlText
+                }
+                if (isDataFlavorSupported(flavor)) {
+                    return clipboardHtml
+                }
+            }
+        }
+        clipboard.setContents(transferable, null)
+    }
 }

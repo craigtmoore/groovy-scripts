@@ -22,5 +22,10 @@ interface ClipboardAccessor {
     void setClipboardContents(String text)
 
 
-
+    /**
+     * Sets the contents of the clipboard to the specified HTML text.
+     *
+     * @param htmlText The HTML text to set in the clipboard.
+     */
+    void setHtmlClipboardContents(String htmlText)
 }

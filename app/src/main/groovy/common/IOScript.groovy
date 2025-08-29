@@ -29,6 +29,9 @@ interface IOScript {
 
         @Option(name = '--clipboard', aliases = ['-cp'], usage = 'Read the input from the clipboard', required = false)
         boolean useClipboard = false
+
+        @Option(name = '--useHtml', usage = 'Use HTML formatting when writing to the clipboard (default)', required = false)
+        boolean useHtml = false
     }
 
     List<String> readInput(log, Options options)

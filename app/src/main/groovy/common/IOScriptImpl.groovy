@@ -54,7 +54,11 @@ class IOScriptImpl implements IOScript {
             ColorLogger.messageBuilder().green("Saved output to '").yellow(options.outFilePath).green("'").log()
         } else if (options.useClipboard) {
             if (options.debug) println outputString
-            clipboardAccessor.setClipboardContents(outputString)
+            if (options.useHtml) {
+                clipboardAccessor.setHtmlClipboardContents(outputString)
+            } else {
+                clipboardAccessor.setClipboardContents(outputString)
+            }
             ColorLogger.info "Saved output to clipboard"
         } else {
             println outputString
