@@ -8,6 +8,7 @@ import org.codehaus.groovy.runtime.StackTraceUtils
 import org.kohsuke.args4j.CmdLineException
 import org.kohsuke.args4j.CmdLineParser
 import org.kohsuke.args4j.ParserProperties
+import stacktrace.JsonToStacktrace
 import stacktrace.StacktraceCleanup
 
 /** Main entry point for the scripts */
@@ -20,7 +21,8 @@ class Main {
         (StacktraceCleanup.SCRIPT_NAME): StacktraceCleanup,
         (AddJiraLinks.SCRIPT_NAME)     : AddJiraLinks,
         (JiraQueryCleanup.SCRIPT_NAME) : JiraQueryCleanup,
-        (TestCaseCount.SCRIPT_NAME)    : TestCaseCount
+        (TestCaseCount.SCRIPT_NAME)    : TestCaseCount,
+        (JsonToStacktrace.SCRIPT_NAME) : JsonToStacktrace
     ]
 
     static void main(String[] args) {
